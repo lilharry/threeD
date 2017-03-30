@@ -2,6 +2,12 @@ from display import *
 from matrix import *
 from math import *
 
+pi = math.pi
+def cos(theta):
+    return math.cos(theta)
+def sin(theta):
+    return math.sin(theta)
+
 def add_box( points, x, y, z, width, height, depth ):
     add_edge(points,x      , y,        z,         x+width, y,        z        )
     add_edge(points,x+width, y,        z,         x+width, y-height, z        )
@@ -34,9 +40,9 @@ def generate_sphere( cx, cy, cz, r, step ):
         for j in range(n):
             c = j * step
             
-            x = r * math.cos(c * math.pi) + cx
-            y = r * math.sin(c * math.pi) * math.cos(2 * math.pi * t) + cy
-            z = r * math.sin(c * math.pi) * math.sin(2 * math.pi * t) + cz
+            x = r * cos(c * pi) + cx
+            y = r * sin(c * pi) * cos(2 * pi * t) + cy
+            z = r * sin(c * pi) * sin(2 * pi * t) + cz
 
             s.append([x,y,z,1])
     
@@ -44,9 +50,27 @@ def generate_sphere( cx, cy, cz, r, step ):
 
         
 def add_torus( points, cx, cy, cz, r0, r1, step ):
-    pass
-def generate_torus( points, cx, cy, cz, r0, r1, step ):
-    pass
+    s = generate_torus(cx,cy,cz,r0,r1,step)
+    for x in s:
+        points.append(x)
+
+def generate_torus( cx, cy, cz, r0, r1, step ):
+    s = []
+    n = int(1/step)
+    
+    for i in range(n):
+        t = i * step
+        
+        for j in range(n):
+            c = j * step
+            
+            x = cos(2 * pi * t) * (r0 * cos(2 * c * pi) + r1) + cx
+            y = r0 * sin(2 * c * pi) + cy
+            z = sin(2 * pi * t) * (-r0 * cos(2 * pi * c) + r1) + cz
+
+            s.append([x,y,z,1])
+    
+    return s
 
 def add_circle( points, cx, cy, cz, r, step ):
     x0 = r + cx
@@ -54,8 +78,8 @@ def add_circle( points, cx, cy, cz, r, step ):
     t = step
 
     while t <= 1.00001:
-        x1 = r * math.cos(2*math.pi * t) + cx;
-        y1 = r * math.sin(2*math.pi * t) + cy;
+        x1 = r * cos(2*pi * t) + cx;
+        y1 = r * sin(2*pi * t) + cy;
 
         add_edge(points, x0, y0, cz, x1, y1, cz)
         x0 = x1
